@@ -1,5 +1,6 @@
 package com.example.crudrestapi.Controller;
 
+import com.example.crudrestapi.Dto.UserDto;
 import com.example.crudrestapi.Entity.User;
 import com.example.crudrestapi.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,25 +20,29 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        return new ResponseEntity<>( userService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+        return new ResponseEntity<>( userService.createUser(userDto), HttpStatus.CREATED);
     }
 
+//    @GetMapping("{id}")
+//    public ResponseEntity<User> getUserById(@PathVariable Long id){
+//        return ResponseEntity.ok(userService.getUserById(id));
+//    }
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUser(){
+    public ResponseEntity<List<UserDto>> getAllUser(){
         return ResponseEntity.ok(userService.getUsers());
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto){
         System.out.println("put request..");
-        return ResponseEntity.ok(userService.updateUser(user));
+        return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
     @DeleteMapping("{id}")

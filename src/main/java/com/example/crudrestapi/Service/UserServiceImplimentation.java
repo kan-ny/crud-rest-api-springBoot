@@ -1,11 +1,14 @@
 package com.example.crudrestapi.Service;
 
+import com.example.crudrestapi.Dto.UserDto;
 import com.example.crudrestapi.Entity.User;
+import com.example.crudrestapi.Mapper.UserMapper;
 import com.example.crudrestapi.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplimentation implements UserService {
@@ -17,30 +20,62 @@ public class UserServiceImplimentation implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+
+//        User user = new User();
+//        user.setEmail(userDto.getEmail());
+//        user.setFirstName(userDto.getFirstName());
+//        user.setLastName(userDto.getLastName());
+//
+//        User savedUser = userRepository.save(user);
+//
+//        return new UserDto(
+//                savedUser.getId(),
+//                savedUser.getFirstName(),
+//                savedUser.getLastName(),
+//                savedUser.getEmail()
+//        );
+
+
+        //using Mapper
+
+      User savedUser = userRepository.save( UserMapper.mapToUser(userDto));
+      return UserMapper.mapToUserDto(savedUser);
+
+
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+    public UserDto getUserById(Long id) {
+
+        User u = userRepository.findById(id).get();
+//        UserDto ud = new UserDto(
+//                u.getId(),
+//                u.getFirstName(),
+//                u.getLastName(),
+//                u.getEmail()
+//        );
+//        return  ud;
+        return UserMapper.mapToUserDto(u);
     }
 
     @Override
-    public List<User> getUsers() {
-        return  userRepository.findAll();
+    public List<UserDto> getUsers() {
+        List<User> l = userRepository.findAll();
+        return l.stream().map( UserMapper::mapToUserDto ).collect(Collectors.toList());
     }
 
     @Override
-    public User updateUser(User user) {
-        User current_user= userRepository.findById(user.getId()).get();
+    public UserDto updateUser(UserDto userDto) {
+        User current_user= userRepository.findById(userDto.getId()).get();
         System.out.println(current_user.toString());
         System.out.println("test....");
-        current_user.setEmail(user.getEmail());
-        current_user.setFirstName(user.getFirstName());
-        current_user.setLastName(user.getLastName());
+        current_user.setEmail(userDto.getEmail());
+        current_user.setFirstName(userDto.getFirstName());
+        current_user.setLastName(userDto.getLastName());
 
-        return userRepository.save(current_user);
+        User updateUser = userRepository.save(current_user);
+        return UserMapper.mapToUserDto(updateUser);
 
     }
 
