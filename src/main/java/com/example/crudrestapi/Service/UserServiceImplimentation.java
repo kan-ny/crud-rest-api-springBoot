@@ -4,20 +4,24 @@ import com.example.crudrestapi.Dto.UserDto;
 import com.example.crudrestapi.Entity.User;
 import com.example.crudrestapi.Mapper.UserMapper;
 import com.example.crudrestapi.Repository.UserRepository;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 public class UserServiceImplimentation implements UserService {
 
     private UserRepository userRepository;
+    private ModelMapper modelMapper;
 
-    public UserServiceImplimentation(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+//    public UserServiceImplimentation(UserRepository userRepository){
+//        this.userRepository = userRepository;
+//    }
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -39,8 +43,13 @@ public class UserServiceImplimentation implements UserService {
 
         //using Mapper
 
-      User savedUser = userRepository.save( UserMapper.mapToUser(userDto));
-      return UserMapper.mapToUserDto(savedUser);
+//      User savedUser = userRepository.save( UserMapper.mapToUser(userDto));
+//      return UserMapper.mapToUserDto(savedUser);
+
+//       Using Mapper Model Lib
+
+        User us = userRepository.save( modelMapper.map(userDto, User.class) );
+        return modelMapper.map(us, UserDto.class);
 
 
     }
@@ -56,13 +65,22 @@ public class UserServiceImplimentation implements UserService {
 //                u.getEmail()
 //        );
 //        return  ud;
-        return UserMapper.mapToUserDto(u);
+//        return UserMapper.mapToUserDto(u);
+
+//       Using Mapper Model Lib
+        return modelMapper.map(u, UserDto.class);
+
     }
 
     @Override
     public List<UserDto> getUsers() {
         List<User> l = userRepository.findAll();
-        return l.stream().map( UserMapper::mapToUserDto ).collect(Collectors.toList());
+//        return l.stream().map( UserMapper::mapToUserDto ).collect(Collectors.toList());
+
+        //       Using Mapper Model Lib
+        return l.stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -75,7 +93,11 @@ public class UserServiceImplimentation implements UserService {
         current_user.setLastName(userDto.getLastName());
 
         User updateUser = userRepository.save(current_user);
-        return UserMapper.mapToUserDto(updateUser);
+//        return UserMapper.mapToUserDto(updateUser);
+
+
+    //       Using Mapper Model Lib
+        return modelMapper.map(updateUser, UserDto.class);
 
     }
 
