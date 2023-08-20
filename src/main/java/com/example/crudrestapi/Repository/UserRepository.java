@@ -9,6 +9,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     // Qurey Creation
+
+    // https://www.baeldung.com/spring-data-derived-queries
+
     // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
 
     Optional<User> findByEmail(String email);
