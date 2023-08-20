@@ -2,14 +2,15 @@ package com.example.crudrestapi.Service;
 
 import com.example.crudrestapi.Dto.UserDto;
 import com.example.crudrestapi.Entity.User;
-import com.example.crudrestapi.Mapper.UserMapper;
+import com.example.crudrestapi.Exceptions.EmailExistException;
+import com.example.crudrestapi.Exceptions.ResourceNotFoundException;
 import com.example.crudrestapi.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -48,6 +49,13 @@ public class UserServiceImplimentation implements UserService {
 
 //       Using Mapper Model Lib
 
+        Optional<User> isExist = userRepository.findByEmail(userDto.getEmail());
+        if(isExist.isPresent()){
+            System.out.println(userDto.getEmail()+" already Exist.");
+            throw new EmailExistException(userDto.getEmail()+" already Exist.");
+        }
+
+
         User us = userRepository.save( modelMapper.map(userDto, User.class) );
         return modelMapper.map(us, UserDto.class);
 
@@ -57,7 +65,9 @@ public class UserServiceImplimentation implements UserService {
     @Override
     public UserDto getUserById(Long id) {
 
-        User u = userRepository.findById(id).get();
+        User u = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id.toString() )
+        );
 //        UserDto ud = new UserDto(
 //                u.getId(),
 //                u.getFirstName(),

@@ -27,7 +27,7 @@ public class User {
     @Column(name = "lname", nullable = false)
     private String lastName;
     @Column(name = "email", nullable = false, unique = true)
-    private String Email;
+    private String email;
 
     @CreationTimestamp
     private LocalDateTime createdDate;
