@@ -31,12 +31,15 @@ public class UserController {
 //    }
     @GetMapping("{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
+        System.out.println("\n\nHola\n");
+
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUser(){
+        System.out.println("\n\nhello\n");
         return ResponseEntity.ok(userService.getUsers());
     }
 
